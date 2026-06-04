@@ -6,7 +6,10 @@
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+ALMATY_TZ = timezone(timedelta(hours=5))
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -120,7 +123,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     action = query.data
     name = user.first_name or "Сотрудник"
     user_names[user.id] = name
-    now = datetime.now().strftime("%H:%M")
+    now = datetime.now(ALMATY_TZ).strftime("%H:%M")
+
     u = get_user(user.id)
 
     # Заблокированные повторные нажатия
@@ -188,7 +192,8 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         await update.message.reply_text("⛔ Только для администратора.")
         return
 
-    today = datetime.now().strftime("%d.%m.%Y")
+    today = datetime.now(ALMATY_TZ).strftime("%d.%m.%Y")
+
     arrived = []
     eating = []
     not_eating = []
